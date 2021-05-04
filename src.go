@@ -1,14 +1,15 @@
 package go_mac_app_info
 /*
-#cgo LDFLAGS: -L${SRCDIR} -llibs
+#cgo darwin CFLAGS: -DDARWIN -x objective-c -fobjc-arc
+#cgo darwin LDFLAGS: -framework Cocoa -framework WebKit
+
 #include <stdlib.h>
-char* getAppInfo(int pid, size_t* size, char** appInfoJson);
+#include <libs.h>
 */
 import "C"
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strings"
 	"unsafe"
 )
@@ -29,7 +30,6 @@ func GetInfo(pid int) (AppInfo, error) {
 	bufPointer := C.getAppInfo(C.int(pid), &size, &appInfoJson)
 
 	if bufPointer == nil {
-		fmt.Println("Not found the application!")
 		return AppInfo{}, errors.New("not found")
 	}
 
