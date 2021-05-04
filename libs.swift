@@ -9,7 +9,7 @@ extension Data {
 extension NSImage {
     var png: Data? { tiffRepresentation?.bitmap?.png }
 }
-func getAppInfo(pid: Int, info: inout String) -> Data? {
+func getInfo(pid: Int, info: inout String) -> Data? {
     let app = NSRunningApplication(processIdentifier: pid_t(pid))
     if app == nil {
         return nil
@@ -32,19 +32,18 @@ func getAppInfo(pid: Int, info: inout String) -> Data? {
     return app?.icon?.png
 }
 
-@_cdecl("getAppInfo")
-public func getAppInfo(pid: Int, size: UnsafeMutablePointer<Int>, appInfoJson: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>) -> UnsafeMutablePointer<UInt8>? {
-    var appInfo = ""
-    var data = getAppInfo(pid: pid, info: &appInfo)
-    if data == nil {
-        return nil
+public class App : NSObject {
+    @objc public static func GetAppInfo(pid: Int, size: UnsafeMutablePointer<Int>, appInfoJson: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>) -> UnsafeMutablePointer<UInt8>? {
+        var appInfo = ""
+        var data = getInfo(pid: pid, info: &appInfo)
+        if data == nil {
+            return nil
+        }
+        size.pointee = data!.count
+        let rawPtr: UnsafeMutablePointer<UInt8> = data!.withUnsafeMutableBytes { (bytePtr: UnsafeMutablePointer<UInt8>) in bytePtr }
+
+        appInfoJson.pointee = strdup(appInfo)
+
+        return rawPtr
     }
-    size.pointee = data!.count
-    let rawPtr: UnsafeMutablePointer<UInt8> = data!.withUnsafeMutableBytes { (bytePtr: UnsafeMutablePointer<UInt8>) in bytePtr }
-
-//     let cs = (appInfo as NSString).utf8String
-    appInfoJson.pointee = strdup(appInfo)
-
-    return rawPtr
 }
-

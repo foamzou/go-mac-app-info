@@ -1,1 +1,6 @@
 .idea
+
+*.o
+*.a
+*.swiftmodule
+emittedheader.h

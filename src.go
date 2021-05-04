@@ -1,6 +1,6 @@
 package go_mac_app_info
 /*
-#cgo LDFLAGS: -L${SRCDIR} -llibs
+#cgo LDFLAGS: ${SRCDIR}/libs.a
 #include <stdlib.h>
 char* getAppInfo(int pid, size_t* size, char** appInfoJson);
 */
