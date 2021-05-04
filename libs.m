@@ -9,7 +9,7 @@ NSData* toPng(NSImage * image) {
                                               hints:nil];
    NSBitmapImageRep *newRep = [[NSBitmapImageRep alloc] initWithCGImage:cgRef];
    [newRep setSize:[image size]];
-   return [newRep representationUsingType:NSBitmapImageFileTypePNG properties:nil];
+   return [newRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
 }
 
 char* getAppInfo(int pid, size_t* size, char** appInfoJson) {
@@ -20,7 +20,7 @@ char* getAppInfo(int pid, size_t* size, char** appInfoJson) {
 
     // datetime
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"];
     NSString *launchDate     =   [dateFormat stringFromDate: app.launchDate];
 
     // dic
